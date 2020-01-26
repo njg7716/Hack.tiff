@@ -3,6 +3,8 @@ import cv2
 import json
 from math import sin, cos, sqrt, atan2, radians
 import matplotlib.pyplot as plt
+from matplotlib.legend_handler import HandlerLine2D
+
 
 path = "/home/lxm8708/Hacktiff/poolpic/12996748"
 
@@ -29,10 +31,10 @@ def getDistance(_lat1, _long1, _lat2, _long2):
     #1km = 3280.84 feet 
     return 3280.84 * distance
 
-#plt.plot([1, 2, 3, 4, 3], [1, 4, 9, 16, 7])
-#plt.show()
-
-
+def midpoint(_lat1, _long1, _lat2, _long2):
+    midx = (_lat1 + _lat2) / 2
+    midy = (_long1 + _long2) / 2
+    return midx, midy
 
 
 
@@ -45,8 +47,6 @@ with open("/home/lxm8708/Hacktiff/poolpic/12996748/12996748.geojson") as f:
 
     #Loop through polygons
     for feature in data['features']:
-        x_array = []
-        y_array = []
         #prints "Polygon"
         #print(feature['geometry']['type'])
         firsttime = True
@@ -62,6 +62,9 @@ with open("/home/lxm8708/Hacktiff/poolpic/12996748/12996748.geojson") as f:
                 counter += 1
                 continue
             else:
+                x_array = []
+                y_array = []
+
                 x_array.append(pt1Lat)
                 y_array.append(pt1Lon)
                 
@@ -71,25 +74,43 @@ with open("/home/lxm8708/Hacktiff/poolpic/12996748/12996748.geojson") as f:
                 pt1Lat = point[0]
                 pt1Lon = point[1]
 
+                midpointx , midpointy = midpoint(pt1Lat, pt1Lon, pt2Lat, pt2Lon)
+
+                x_array.append(midpointx)
+                y_array.append(midpointy)
+
+                x_array.append(pt1Lat)
+                y_array.append(pt1Lon)
+
+                #print('\n\n\n\n')
                 #print(pt1Lat)
                 #print(pt1Lon)
+                #print(midpointx)
+                #print(midpointy)
                 #print(pt2Lat)
                 #print(pt2Lon)
+                #print('\n\n\n\n')
                 firsttime = True
 
             
-            print("Printing dimensions from point " + str(counter) + " to " + str(counter + 1))
+            #print("Printing dimensions from point " + str(counter) + " to " + str(counter + 1))
             measurement = getDistance(pt1Lat, pt1Lon, pt2Lat, pt2Lon)
             
-            print("Measurement made: " + str(measurement))
-            print()
+            #print("Measurement made: " + str(measurement))
+            #print()
             counter += 1
-        print("\n\nFinished polygon\n\n")
+            temp = plt.plot(x_array, y_array, label=str('%.1f' % measurement) + " ft")
+            
+            #plt.legend(handler_map={temp[0]: HandlerLine2D(numpoints=2)})
+            plt.annotate(str('%.1f' % measurement) + " ft",(midpointx,midpointy)) # this is the point to label
+            #print(temp[0])
+        #print("\n\nFinished polygon\n\n")
         #print(feature['geometry']['coordinates'])
         #break
 
 
-        plt.plot(x_array, y_array, label="TEST LABEL")
+        #plt.plot(x_array, y_array)
+plt.axis('off')
 plt.show()
     
 

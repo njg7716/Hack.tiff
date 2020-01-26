@@ -17,6 +17,9 @@ nadirs, obliques = evtech.load_dataset("/local/2020_hackathon/2020_hackathon/129
 # Load first oblique image
 img = nadirs[0].load_image()
 
+############################################################
+print(nadirs[0].get_bounds())
+
 # mouse callback function
 # For drawing
 drawing = False # true if mouse is pressed
@@ -66,5 +69,7 @@ while(True):
         break
 
 cv2.destroyAllWindows()
+
+
 
 
