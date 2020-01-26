@@ -37,6 +37,12 @@ def midpoint(_lat1, _long1, _lat2, _long2):
     return midx, midy
 
 
+def dist3D(dist1, z1, z2):  
+    #pythagorean theorum to get distance of slanted roof points
+    result = dist1 * dist1 + (z1 - z2) * (z1 - z2)
+    return sqrt(result)
+
+    
 
 
 
@@ -58,6 +64,7 @@ with open("/home/lxm8708/Hacktiff/poolpic/12996748/12996748.geojson") as f:
             if firsttime == True:
                 pt1Lat = point[0]
                 pt1Lon = point[1]
+                pt1Alt = point[2]
                 firsttime = False
                 counter += 1
                 continue
@@ -70,9 +77,12 @@ with open("/home/lxm8708/Hacktiff/poolpic/12996748/12996748.geojson") as f:
                 
                 pt2Lat = pt1Lat
                 pt2Lon = pt1Lon
+                pt2Alt = pt1Alt
+
 
                 pt1Lat = point[0]
                 pt1Lon = point[1]
+                pt1Alt = point[2]
 
                 midpointx , midpointy = midpoint(pt1Lat, pt1Lon, pt2Lat, pt2Lon)
 
@@ -95,6 +105,7 @@ with open("/home/lxm8708/Hacktiff/poolpic/12996748/12996748.geojson") as f:
             
             #print("Printing dimensions from point " + str(counter) + " to " + str(counter + 1))
             measurement = getDistance(pt1Lat, pt1Lon, pt2Lat, pt2Lon)
+            measurement = dist3D(measurement, pt1Alt, pt2Alt)
             
             #print("Measurement made: " + str(measurement))
             #print()
